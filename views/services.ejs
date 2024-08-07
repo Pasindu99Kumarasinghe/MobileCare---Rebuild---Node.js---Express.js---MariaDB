@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <%- include('_navbar') %>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2>Our Services</h2>
+                    <p class="lead">We offer a range of services to keep your mobile device in top condition.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/display.jpg" alt="Display Replacement" class="img-fluid mb-3">
+                        <h4>Display Replacement</h4>
+                        <p>Get your cracked or broken display replaced quickly and efficiently.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/battery.jpg" alt="Battery Replacement" class="img-fluid mb-3">
+                        <h4>Battery Replacement</h4>
+                        <p>Ensure your phone lasts all day with our battery replacement service.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/software.jpg" alt="Software Installation" class="img-fluid mb-3">
+                        <h4>Software Installation</h4>
+                        <p>Install the latest software and updates to keep your device running smoothly.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/troubleshooting.jpg" alt="Mobile Troubleshooting" class="img-fluid mb-3">
+                        <h4>Mobile Troubleshooting</h4>
+                        <p>Diagnose and fix any issues you are experiencing with your mobile device.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/unlock.jpg" alt="Mobile Unlocking" class="img-fluid mb-3">
+                        <h4>Mobile Unlocking</h4>
+                        <p>Unlocking Android Mobiles and IPhones .</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="service-box">
+                        <img src="/img/services/accessories.jpg" alt="Mobile Accessories" class="img-fluid mb-3">
+                        <h4>Mobile Accessories</h4>
+                        <p>All mobile phone parts at the best price.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Footer Section -->
+    <%- include('_footer') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/js/bootstrap.min.js"></script>
+</body>

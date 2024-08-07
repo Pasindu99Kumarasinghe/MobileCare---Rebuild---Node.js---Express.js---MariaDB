@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">
+            <img src="/img/brand/logo3.png" alt="Logo" width="75" height="75" class="d-inline-block align-center">
+            Mobile Care
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="w-100 d-flex justify-content-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="#about">About Us</a>
+                    </li>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="/services">Services</a>
+                    </li>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="/stock">Stock</a>
+                    </li>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="/customer">Customers</a>
+                    </li>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="/contact">Contact Us</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <% if (user) { %>
+                      <li class="nav-item">
+                        <button class="btn btn-danger my-2 my-sm-0" type="button" onclick="location.href='/logout'">Log Out</button>
+                      </li>
+                    <% } else { %>
+                      <button class="btn btn-primary my-2 my-sm-0" type="button" onclick="location.href='/login'">Login</button>
+                    <% } %>
+                  </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!--Hero Section Start-->
+    <div class="hero-image">
+        <div class="hero-text">
+            <h1 class="text-center">Welcome to Mobile Care</h1>
+            <% if (typeof user !== 'undefined' && user !== null) { %>
+                <p class="text-center">Hello, <%= user.username %>!</p>
+            <% } else { %>
+                <p class="text-center">You are not logged in.</p>
+            <% } %>
+            <!-- Display Flash Messages -->
+            <% if (messages.success) { %>
+                <div class="alert alert-success"><%= messages.success %></div>
+            <% } %>
+            <% if (messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
+            <p>Slogan</p>
+        </div>
+    </div>
+    <!--Hero Section End-->
+
+    <!--About Us Section Start-->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>About Us</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Curabitur eleifend felis vel nisl sollicitudin, id egestas nisi luctus.</p>
+                    <p>Donec sit amet erat nisi. Phasellus interdum, nibh ut semper blandit, leo urna fermentum nisi, nec lobortis lacus quam non sapien. Aliquam erat volutpat. Aenean tincidunt, turpis nec faucibus tincidunt, urna mi cursus quam, eu sollicitudin orci sapien et orci.</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="/img/home/aboutus.jpg" alt="About Us" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--About Us Section End-->
+
+    <!--Footer Section -->
+    <%- include('_footer') %>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

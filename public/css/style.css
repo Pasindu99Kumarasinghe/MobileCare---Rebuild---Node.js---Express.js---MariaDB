@@ -1,0 +1,328 @@
+
+body {
+    padding-top: 56px; /* To prevent the navbar from overlapping content */
+}
+
+/*----------------------------------
+          Navbar Section
+----------------------------------*/
+
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+}
+
+.navbar-brand {
+    font-size: 40px;
+    font-weight: 250;
+  }
+
+/*----------------------------------
+        Hero Image Section
+----------------------------------*/
+
+.hero-image {
+    background-image: url(../img/home/hero3.jpg);
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    position: relative;
+    color: white;
+    text-align: center;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+}
+
+/*----------------------------------
+          About Us Section
+----------------------------------*/
+
+#about {
+    background: #f8f9fa;
+    padding: 60px 0;
+}
+
+#about h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+#about p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+#about img {
+    max-width: 100%;
+    height: auto;
+}
+
+/*----------------------------------
+           Services Page
+----------------------------------*/
+
+#services {
+    background: #ffffff;
+    padding: 60px 0;
+}
+
+#services h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.service-box {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.service-box:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-box img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.service-box h4 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.service-box p{
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/*----------------------------------
+         Contact Us Page
+----------------------------------*/
+
+.contact-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.card-header {
+    background: #007bff;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/*----------------------------------
+           Stock Page
+----------------------------------*/
+
+.stock-section {
+    padding: 60px 0;
+}
+
+.card {
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background: #007bff;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/*----------------------------------
+           Stock Page
+----------------------------------*/
+
+.customer-section {
+    padding: 60px 0;
+}
+
+.card {
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background: #007bff;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/*----------------------------------
+           Stock Page
+----------------------------------*/
+
+.about-us-section {
+    padding: 60px 0;
+}
+
+.about-us-section h3 {
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.about-us-section p {
+    font-size: 1.2rem;
+    color: #666666;
+}
+
+.about-us-section .img-fluid {
+    border-radius: 8px;
+}
+
+.about-us-section h5 {
+    margin-top: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.about-us-section p {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #777777;
+}
+
+/*----------------------------------
+          Footer Section
+----------------------------------*/
+
+.footer {
+    background: #343a40;
+    color: white;
+}
+
+.footer h5 {
+    margin-bottom: 15px;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/*----------------------------------
+            Login Page
+----------------------------------*/
+
+.login-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.card-header {
+    background: #007bff;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-footer {
+    background: #f8f9fa;
+    border-top: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/*----------------------------------
+            Register Page
+----------------------------------*/
+
+.register-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.card-header {
+    background: #007bff;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-footer {
+    background: #f8f9fa;
+    border-top: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
