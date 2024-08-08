@@ -4,51 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Mobile Care</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
 </head>
-
 <body>
-
-    <!-- Navigation Bar -->
+    <!-- Navigation Sidebar -->
     <%- include('_navbar') %>
 
-    <!-- Contact Us Section -->
-    <section class="contact-section py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header text-center">
-                            <h3>Contact Us</h3>
-                        </div>
-                        <div class="card-body">
-                            <form action="/contact" method="post">
-                                <div class="form-group mb-3">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="subject">Subject</label>
-                                    <input type="text" class="form-control" id="subject" name="subject" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="message">Message</label>
-                                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block mt-3">Send Message</button>
-                            </form>
-                        </div>
+    <!-- Contact Section -->
+    <div id="content">
+        <section class="contact-section py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center">Contact Us</h2>
+                        <!-- Display Flash Messages -->
+                        <% if (messages.success) { %>
+                            <div class="alert alert-success"><%= messages.success %></div>
+                        <% } %>
+                        <% if (messages.error) { %>
+                            <div class="alert alert-danger"><%= messages.error %></div>
+                        <% } %>
+                        <!-- Contact Form -->
+                        <form action="/send-message" method="POST">
+                            <div class="form-group mb-3">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="message">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Footer Section -->
     <%- include('_footer') %>

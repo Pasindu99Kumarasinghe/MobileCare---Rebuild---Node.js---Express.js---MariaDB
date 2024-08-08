@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -6,6 +8,7 @@ const flash = require('connect-flash');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const db = require('./node/db');
+const nodemailer = require('nodemailer');
 const app = express();
 const port = 3000;
 
@@ -18,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to parse incoming request bodies
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // Middleware for session handling
@@ -55,6 +59,39 @@ const pool = mysql.createPool({
 // Promise wrapper for MySQL queries
 const promisePool = pool.promise();
 
+const transporter = nodemailer.createTransport({
+    host: process.env.MAILTRAP_HOST,
+    port: process.env.MAILTRAP_PORT,
+    auth: {
+        user: process.env.MAILTRAP_USER,
+        pass: process.env.MAILTRAP_PASS
+    }
+});
+
+app.post('/send-message', (req, res) => {
+    const { name, email, message } = req.body;
+    
+    const mailOptions = {
+        from: email,
+        to: process.env.MAILTRAP_TO, // Replace with the recipient's email
+        subject: `New message from ${name}`,
+        text: message
+    };
+    
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error:', error);
+            req.flash('error', 'Failed to send message. Please try again later.');
+            res.redirect('/contact');
+        } else {
+            console.log('Email sent: ' + info.response);
+            req.flash('success', 'Message sent successfully!');
+            res.redirect('/contact');
+        }
+    });
+});
+
+
 // Route for home page
 app.get('/', (req, res) => {
     res.render('index', {
@@ -73,32 +110,28 @@ app.get('/register', (req, res) => {
     res.render('register');
 });
 
-// login process
-app.post('/login', (req, res) => {
+// Handle login form submission
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-        if (err) throw err;
+    try {
+        const [rows] = await promisePool.query('SELECT * FROM users WHERE username = ?', [username]);
+        const user = rows[0];
 
-        if (results.length > 0) {
-            const user = results[0];
-            const isMatch = await bcrypt.compare(password, user.password);
-
-            if (isMatch) {
-                req.session.user = user; // Save user info in session
-                req.flash('success', 'Login successful');
-                res.redirect('/');
-            } else {
-                req.flash('error', 'Incorrect password');
-                res.redirect('/login');
-            }
+        if (user && await bcrypt.compare(password, user.password)) {
+            req.session.user = user;
+            req.flash('success', 'Logged in successfully');
+            res.redirect('/');
         } else {
-            req.flash('error', 'Username not found');
+            req.flash('error', 'Invalid username or password');
             res.redirect('/login');
         }
-    });
+    } catch (error) {
+        console.error('Error during login:', error);
+        req.flash('error', 'Internal Server Error');
+        res.redirect('/login');
+    }
 });
-
 
 // Logout route
 app.get('/logout', (req, res) => {
