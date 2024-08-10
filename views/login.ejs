@@ -6,10 +6,10 @@
     <title>Login - Mobile Care</title>
     <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding: 5px;">
 
     <!-- Display Flash Messages -->
 <% if (messages.success) { %>
@@ -50,7 +50,7 @@
                                     <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
                                 <div class="form-group mt-4"> <!-- Added mt-4 class for margin-top -->
-                                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                    <button type="submit" class="btn btn-success btn-block">Login</button>
                                 </div>
                             </form>
                         </div>
@@ -71,6 +71,6 @@
     <!-- Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

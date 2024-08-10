@@ -6,20 +6,20 @@
     <title>My Website</title>
     <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
     <style>
         html {
             scroll-behavior: smooth;
         }
     </style>
 </head>
-<body>
+<body style="padding: 5px;">
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">
-            <img src="/img/brand/logo3.png" alt="Logo" width="75" height="75" class="d-inline-block align-center">
-            Mobile Care
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <a class="navbar-brand custom-brand ps-3" href="/">
+            <img src="/img/brand/logo3.png" alt="Logo" width="75" height="75" class="d-inline-block align-center rounded-image">
+            <span class="brand-text">MoBiLe CaRe</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -49,10 +49,10 @@
                 <ul class="navbar-nav ml-auto">
                     <% if (user) { %>
                       <li class="nav-item">
-                        <button class="btn btn-outline-danger my-2 my-sm-0" type="button" onclick="location.href='/logout'">Log Out</button>
+                        <button class="btn btn-outline-warning my-2 my-sm-0" type="button" onclick="location.href='/logout'">Log Out</button>
                       </li>
                     <% } else { %>
-                      <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="location.href='/login'">Login</button>
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="location.href='/login'">Login</button>
                     <% } %>
                   </ul>
             </div>
@@ -107,6 +107,6 @@
     <!-- Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

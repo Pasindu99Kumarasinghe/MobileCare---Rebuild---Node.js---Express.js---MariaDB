@@ -6,9 +6,9 @@
     <title>Add Stock</title>
     <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 </head>
-<body>
+<body style="padding: 5px;">
     <!-- Navigation Bar -->
     <%- include('_navbar') %>
 
@@ -30,7 +30,7 @@
                         </div>
                         <div class="card-body">
                             <form action="/add_stock" method="post">
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="item">Item</label>
                                     <select class="form-control" id="item" name="item" required>
                                         <option value="Display">Display</option>
@@ -39,7 +39,7 @@
                                         <option value="Tempered Glass">Tempered Glass</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="brand">Brand</label>
                                     <select class="form-control" id="brand" name="brand" required>
                                         <option value="Apple">Apple</option>
@@ -49,15 +49,15 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="model">Model</label>
                                     <input type="text" class="form-control" id="model" name="model" required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="quantity">Quantity</label>
                                     <input type="number" class="form-control" id="quantity" name="quantity" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Add Stock</button>
+                                <button type="submit" class="btn btn-success">Add Stock</button>
                             </form>
                         </div>
                     </div>
