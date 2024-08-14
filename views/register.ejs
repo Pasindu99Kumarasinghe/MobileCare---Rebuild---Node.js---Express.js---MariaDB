@@ -11,6 +11,14 @@
 
 <body style="padding: 5px;">
 
+    <!-- Display Flash Messages -->
+    <% if (messages.success) { %>
+        <div class="alert alert-success"><%= messages.success %></div>
+    <% } %>
+    <% if (messages.error) { %>
+        <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %>
+
     <!-- Navigation Bar -->
     <%- include('_navbar') %>
 
@@ -41,6 +49,13 @@
                                 <div class="form-group">
                                     <label for="confirm-password">Confirm Password</label>
                                     <input type="password" class="form-control mb-4" id="confirm-password" name="confirm_password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select class="form-control mb-4" id="role" name="role" required>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-block">Register</button>
                             </form>

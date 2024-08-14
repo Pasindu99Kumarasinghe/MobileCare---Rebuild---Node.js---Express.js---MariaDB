@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Mobile Care</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body style="padding: 5px;">
+    <!-- Navigation Sidebar -->
+    <%- include('_navbar') %>
+
+    <!-- Messages Section -->
+    <div id="messages">
+        <section class="messages-section py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center">Received Messages</h2>
+                        <!-- Display Flash Messages -->
+                        <% if (typeof messages !== 'undefined') { %>
+                            <% if (messages.success) { %>
+                                <div class="alert alert-success"><%= messages.success %></div>
+                            <% } %>
+                            <% if (messages.error) { %>
+                                <div class="alert alert-danger"><%= messages.error %></div>
+                            <% } %>
+                        <% } %>
+                        <!-- Display Messages -->
+                        <% if (messages.length === 0) { %>
+                            <p>No messages found.</p>
+                        <% } else { %>
+                            <ul class="list-group">
+                                <% messages.forEach(message => { %>
+                                    <li class="list-group-item">
+                                        <strong>From:</strong> <%= message.email %><br>
+                                        <strong>Subject:</strong> <%= message.subject %><br>
+                                        <strong>Message:</strong> <%= message.message %><br>
+                                        <small><%= new Date(message.created_at).toLocaleString() %></small>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } %>                                               
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer Section -->
+    <%- include('_footer') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

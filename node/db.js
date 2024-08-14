@@ -1,21 +1,24 @@
-// db.js
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-// Create a connection to the database
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '111',
-  database: 'mobile_care' 
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
-// Connect to the database
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err.stack);
-    return;
-  }
-  console.log('Connected to the database as id ' + connection.threadId);
-});
+async function testConnection() {
+    const connection = await pool.getConnection();
+    try {
+        console.log('Successfully connected to the database.');
+    } catch (error) {
+        console.error('Database connection failed:', error);
+    } finally {
+        connection.release();
+    }
+}
 
-module.exports = connection;
+testConnection();
+
+module.exports = pool;

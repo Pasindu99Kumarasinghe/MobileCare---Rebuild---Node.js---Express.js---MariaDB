@@ -18,13 +18,15 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h2 class="text-center">Contact Us</h2>
+                        
                         <!-- Display Flash Messages -->
-                        <% if (messages.success) { %>
+                        <% if (messages.success && messages.success.length > 0) { %>
                             <div class="alert alert-success"><%= messages.success %></div>
                         <% } %>
-                        <% if (messages.error) { %>
+                        <% if (messages.error && messages.error.length > 0) { %>
                             <div class="alert alert-danger"><%= messages.error %></div>
                         <% } %>
+    
                         <!-- Contact Form -->
                         <form action="/send-message" method="POST">
                             <div class="form-group mb-3">
@@ -46,7 +48,7 @@
             </div>
         </section>
     </div>
-
+    
     <!-- Footer Section -->
     <%- include('_footer') %>
 
@@ -55,6 +57,6 @@
     <!-- Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

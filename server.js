@@ -1,16 +1,35 @@
 require('dotenv').config();
 
+const axios = require('axios');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
-const mysql = require('mysql2');
+const promisePool = require('./node/db');
 const bcrypt = require('bcrypt');
 const db = require('./node/db');
-const nodemailer = require('nodemailer');
+const router = express.Router();
 const app = express();
 const port = 3000;
+
+
+function ensureAuthenticated(req, res, next) {
+    if (req.session.user) {
+        return next();
+    }
+    req.flash('error', 'Please log in to access this page');
+    res.redirect('/login');
+}
+
+function ensureAdmin(req, res, next) {
+    if (req.session.user && req.session.user.role === 'admin') {
+        return next();
+    }
+    req.flash('error', 'You do not have permission to access this page');
+    res.redirect('/');
+}
+
 
 // Set up EJS as the view engine
 app.set('view engine', 'ejs');
@@ -23,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
+app.use('/admin', router);
 
 // Middleware for session handling
 app.use(session({
@@ -48,50 +68,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// Create a MySQL connection pool
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '111',
-    database: 'mobile_care'
-});
-
-// Promise wrapper for MySQL queries
-const promisePool = pool.promise();
-
-const transporter = nodemailer.createTransport({
-    host: process.env.MAILTRAP_HOST,
-    port: process.env.MAILTRAP_PORT,
-    auth: {
-        user: process.env.MAILTRAP_USER,
-        pass: process.env.MAILTRAP_PASS
-    }
-});
-
-app.post('/send-message', (req, res) => {
-    const { name, email, message } = req.body;
-    
-    const mailOptions = {
-        from: email,
-        to: process.env.MAILTRAP_TO, // Replace with the recipient's email
-        subject: `New message from ${name}`,
-        text: message
-    };
-    
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error:', error);
-            req.flash('error', 'Failed to send message. Please try again later.');
-            res.redirect('/contact');
-        } else {
-            console.log('Email sent: ' + info.response);
-            req.flash('success', 'Message sent successfully!');
-            res.redirect('/contact');
-        }
-    });
-});
-
-
+module.exports = router;
+  
 // Route for home page
 app.get('/', (req, res) => {
     res.render('index', {
@@ -110,7 +88,7 @@ app.get('/register', (req, res) => {
     res.render('register');
 });
 
-// Handle login form submission
+// Handle Login Form Submission
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -119,9 +97,19 @@ app.post('/login', async (req, res) => {
         const user = rows[0];
 
         if (user && await bcrypt.compare(password, user.password)) {
-            req.session.user = user;
+            req.session.user = {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            };
             req.flash('success', 'Logged in successfully');
-            res.redirect('/');
+            
+            // Redirect based on role
+            if (user.role === 'admin') {
+                res.redirect('/admin/admin-dashboard');
+            } else {
+                res.redirect('/');
+            }
         } else {
             req.flash('error', 'Invalid username or password');
             res.redirect('/login');
@@ -132,6 +120,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/login');
     }
 });
+
 
 // Logout route
 app.get('/logout', (req, res) => {
@@ -146,25 +135,55 @@ app.get('/logout', (req, res) => {
 
 
 
-// Handle Register Form Submission
 app.post('/register', async (req, res) => {
-    const { username, password, confirm_password } = req.body;
+    const { username, password, confirm_password, role } = req.body;
 
     if (password !== confirm_password) {
-        return res.status(400).send('Passwords do not match');
+        req.flash('error', 'Passwords do not match');
+        return res.redirect('/register');
     }
 
     try {
-        // Hash the password before storing it
-        const bcrypt = require('bcrypt');
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await promisePool.query('INSERT INTO users (username, password) VALUES (?, ?)', 
-        [username, hashedPassword]);
+        await promisePool.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
+        [username, hashedPassword, role]);
 
-        res.redirect('/login'); // Redirect to login page after successful registration
+        req.flash('success', 'Registered successfully, please log in');
+        res.redirect('/login');
     } catch (error) {
         console.error('Error registering user:', error);
+        req.flash('error', 'Internal Server Error');
+        res.redirect('/register');
+    }
+});
+
+// To store emails
+app.post('/send-message', async (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Insert email details into the database
+    try {
+        await promisePool.query('INSERT INTO emails (name, email, subject, message) VALUES (?, ?, ?, ?)', 
+        [name, email, `New message from ${name}`, message]);
+
+        req.flash('success', 'Your message has been sent successfully!');
+        res.redirect('/contact');
+    } catch (error) {
+        console.error('Error saving email:', error);
+        req.flash('error', 'There was an error sending your message. Please try again later.');
+        res.redirect('/contact');
+    }
+});
+
+// To retrieve emails
+// Route to show messages
+app.get('/admin/messages', async (req, res) => {
+    try {
+        const [rows] = await promisePool.query('SELECT * FROM emails ORDER BY created_at DESC');
+        res.render('admin/messages', { messages: rows });
+    } catch (error) {
+        console.error('Error fetching messages:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -177,17 +196,17 @@ app.get('/', (req, res) => {
     });
 });
 
-
 // Route for stock page
-app.get('/stock', async (req, res) => {
+app.get('/stock', ensureAuthenticated, ensureAdmin, async (req, res) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM stock');
-        res.render('stock', { stock: rows });
+        res.render('stock', { stock: rows, user: req.session.user });
     } catch (error) {
-        console.error('Error fetching stock:', error);
+        console.error('Error fetching stock data:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Route for add_stock page
 app.get('/add_stock', (req, res) => {
@@ -255,7 +274,7 @@ app.post('/delete_stock/:id', async (req, res) => {
 
     try {
         await promisePool.query('DELETE FROM stock WHERE id = ?', [id]);
-        res.redirect('/stock'); // Redirect to the stock list page
+        res.redirect('stock'); // Redirect to the stock list page
     } catch (error) {
         console.error('Error deleting stock:', error);
         res.status(500).send('Internal Server Error');
@@ -270,7 +289,7 @@ app.post('/add_customer', async (req, res) => {
         await promisePool.query('INSERT INTO customers (customerName, idNumber, contactNumber, email, address, purchasedItems, billValue) VALUES (?, ?, ?, ?, ?, ?, ?)', 
         [customerName, idNumber, contactNumber, email, address, purchasedItems, billValue]);
 
-        res.redirect('/customer'); // Redirect to the customer list page
+        res.redirect('customer'); // Redirect to the customer list page
     } catch (error) {
         console.error('Error adding customer:', error);
         res.status(500).send('Internal Server Error');
@@ -332,7 +351,7 @@ app.post('/delete_customer/:id', async (req, res) => {
 
     try {
         await promisePool.query('DELETE FROM customers WHERE id = ?', [id]);
-        res.redirect('/customer'); // Redirect to the customer list page
+        res.redirect('customer'); // Redirect to the customer list page
     } catch (error) {
         console.error('Error deleting customer:', error);
         res.status(500).send('Internal Server Error');
@@ -347,6 +366,21 @@ app.get('/about', (req, res) => {
 // Route for services page
 app.get('/services', (req, res) => {
     res.render('services');
+});
+
+// Route that requires login
+app.get('/dashboard', ensureAuthenticated, (req, res) => {
+    res.render('dashboard');
+});
+
+// Route that requires admin role
+app.get('/admin', ensureAuthenticated, ensureAdmin, (req, res) => {
+    res.render('admin');
+});
+
+//Route for admin-dashboard
+app.get('/admin/admin-dashboard', ensureAuthenticated, ensureAdmin, (req, res) => {
+    res.render('admin/admin-dashboard', { user: req.session.user });
 });
 
 // Start the server

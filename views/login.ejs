@@ -12,12 +12,13 @@
 <body style="padding: 5px;">
 
     <!-- Display Flash Messages -->
-<% if (messages.success) { %>
-    <div class="alert alert-success"><%= messages.success %></div>
-<% } %>
-<% if (messages.error) { %>
-    <div class="alert alert-danger"><%= messages.error %></div>
-<% } %>
+    <% if (messages.success) { %>
+        <div class="alert alert-success"><%= messages.success %></div>
+    <% } %>
+    <% if (messages.error) { %>
+        <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %>
+    
 
     <!-- Navigation Bar -->
     <%- include('_navbar') %>
