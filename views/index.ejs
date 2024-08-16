@@ -35,7 +35,14 @@
             <% if (messages.error) { %>
                 <div class="alert alert-danger"><%= messages.error %></div>
             <% } %>
-            <p>Slogan</p>
+            <p>Quick Fix. Happy Mobile</p>
+            <!-- Scroll Buttons -->
+            <div class="scroll-button1">
+                <button type="button" class="btn btn-outline-light btn-lg" onclick="scrollToSection('about')">Learn More About Us</button>
+            </div>
+            <div class="scroll-button2">
+                <button type="button" class="btn btn-outline-light btn-lg" onclick="scrollToSection('location')">How to Find Us</button>
+            </div>
         </div>
     </div>
     <!--Hero Section End-->
@@ -57,6 +64,29 @@
     </section>
     <!--About Us Section End-->
 
+    <!-- Google Maps Section Start -->
+    <section id="location" class="py-5">
+        <div class="container">
+            <h2 class="text-center">Our Location</h2>
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <div class="location">
+                        <img src="/img/home/location.jpg" alt="location" class="img-fluid mb-3">
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="google-map">
+                        <!-- Embed Google Map -->
+                        <iframe
+                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.838312182915!2d80.03770167473265!3d6.5420921229475235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2336d3243fc37%3A0x7a6fd9394ffd4429!2sMobile%20Care%20Dodangoda!5e0!3m2!1sen!2slk!4v1723788433228!5m2!1sen!2slk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Google Maps Section End -->
+
     <!--Footer Section -->
     <%- include('_footer') %>
 
@@ -67,5 +97,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+    
+
 </body>
 </html>

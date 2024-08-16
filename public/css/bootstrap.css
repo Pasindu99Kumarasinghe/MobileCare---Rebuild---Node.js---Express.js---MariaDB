@@ -227,6 +227,66 @@
   padding: 20px;
 }
 
+.scroll-button1 {
+  position: absolute;
+  bottom: 20vh; /* Distance from the bottom, based on viewport height */
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 25px;
+  border: 2px var(--bs-success);
+  white-space: nowrap;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  left: -120%; /* Position the button 5% from the left */
+}
+
+
+.scroll-button2 {
+  position: absolute;
+  bottom: -33vh; /* Distance from the bottom, based on viewport height */
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 25px;
+  border: 2px var(--bs-success);
+  white-space: nowrap;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  right: 30%; /* Position the button 5% from the right */
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 768px) {
+  .scroll-button1 {
+      bottom: 25vh; /* Adjust position for smaller screens */
+      font-size: 18px; /* Slightly smaller text */
+      padding: 6px 12px; /* Adjust padding for smaller buttons */
+      left: -50%; /* Less distance from the left on small screens */
+  }
+
+  .scroll-button2 {
+      bottom:-30vh; /* Adjust position for smaller screens */
+      font-size: 18px; /* Slightly smaller text */
+      padding: 6px 12px; /* Adjust padding for smaller buttons */
+      right: 25%; /* Less distance from the right on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-button1 {
+      bottom: 10vh; /* Further adjust position for very small screens */
+      font-size: 16px; /* Smaller text for very small screens */
+      padding: 4px 10px; /* Adjust padding for very small screens */
+      left: -50%; /* Even less distance from the left */
+  }
+
+  .scroll-button2 {
+      bottom: 1vh; /* Further adjust position for very small screens */
+      font-size: 16px; /* Smaller text for very small screens */
+      padding: 4px 10px; /* Adjust padding for very small screens */
+      right: 25%; /* Even less distance from the right */
+  }
+}
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
@@ -4414,6 +4474,10 @@ textarea.form-control-lg {
 
 [data-bs-theme=dark] .navbar-toggler-icon {
   --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.brand-name {
+  margin-left: 20px; /* Adjust the space as needed */
 }
 
 .card {

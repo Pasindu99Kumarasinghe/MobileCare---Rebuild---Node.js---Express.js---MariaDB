@@ -30,7 +30,7 @@
                         </div>
                         <div class="card-body">
                             <form action="/admin/edit_stock/<%= stock.id %>" method="post">
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="item">Item</label>
                                     <select class="form-control" id="item" name="item" required>
                                         <option value="Display" <%= stock.item === 'Display' ? 'selected' : '' %>>Display</option>
@@ -39,7 +39,7 @@
                                         <option value="Tempered Glass" <%= stock.item === 'Tempered Glass' ? 'selected' : '' %>>Tempered Glass</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="brand">Brand</label>
                                     <select class="form-control" id="brand" name="brand" required>
                                         <option value="Apple" <%= stock.brand === 'Apple' ? 'selected' : '' %>>Apple</option>
@@ -49,15 +49,15 @@
                                         <option value="Other" <%= stock.brand === 'Other' ? 'selected' : '' %>>Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="model">Model</label>
                                     <input type="text" class="form-control" id="model" name="model" value="<%= stock.model %>" required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="quantity">Quantity</label>
                                     <input type="number" class="form-control" id="quantity" name="quantity" value="<%= stock.quantity %>" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Update Stock</button>
+                                <button type="submit" class="btn btn-primary mt-3">Update Stock</button>
                             </form>
                         </div>
                     </div>
