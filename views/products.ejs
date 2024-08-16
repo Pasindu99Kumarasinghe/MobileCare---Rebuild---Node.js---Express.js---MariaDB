@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Mobile Care</title>
+    <!-- Bootstrap CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+
+<body style="padding: 5px;">
+
+    <!-- Navigation Bar -->
+    <%- include('_navbar') %>
+
+    <!-- Products Section -->
+    <section class="products-section py-5">
+        <div class="container">
+            <h6>Explore our range of products below!</h6>
+
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <input type="text" id="searchBar" class="form-control" placeholder="Search by Item, Brand, or Model">
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>Products List</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-success">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Item</th>
+                                            <th scope="col">Brand</th>
+                                            <th scope="col">Model</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Image</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productTableBody" class="table-light">
+                                        <% if (products.length > 0) { %>
+                                            <% products.forEach(product => { %>
+                                                <tr class="product-row">
+                                                    <td class="item"><%= product.item %></td>
+                                                    <td class="brand"><%= product.brand %></td>
+                                                    <td class="model"><%= product.model %></td>
+                                                    <td><%= product.description %></td>
+                                                    <td>Rs.<%= product.price %></td>
+                                                    <td><%= product.quantity %></td>
+                                                    <td>
+                                                        <% if (product.image_url) { %>
+                                                            <img src="<%= product.image_url %>" alt="<%= product.item %>" style="width: 100px; height: auto;">
+                                                        <% } else { %>
+                                                            No image
+                                                        <% } %>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center">No products available</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>         
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include('_footer') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('searchBar').addEventListener('input', function() {
+            const searchValue = this.value.trim().toLowerCase();
+            const rows = document.querySelectorAll('.product-row');
+
+            rows.forEach(row => {
+                const item = row.querySelector('.item').textContent.trim().toLowerCase();
+                const brand = row.querySelector('.brand').textContent.trim().toLowerCase();
+                const model = row.querySelector('.model').textContent.trim().toLowerCase();
+
+                if (item.includes(searchValue) || brand.includes(searchValue) || model.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

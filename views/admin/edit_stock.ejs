@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Stock</title>
+    <!-- Bootstrap CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body style="padding: 5px;">
+    <!-- Navigation Bar -->
+    <%- include('_navbar') %>
+
+    <!-- Edit Stock Section -->
+    <section class="edit-stock-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <h3 class="text-center">Edit Stock</h3>
+                </div>
+            </div>
+
+            <!-- Edit Stock Form -->
+            <div class="row mt-5">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Edit Stock Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/admin/edit_stock/<%= stock.id %>" method="post">
+                                <div class="form-group">
+                                    <label for="item">Item</label>
+                                    <select class="form-control" id="item" name="item" required>
+                                        <option value="Display" <%= stock.item === 'Display' ? 'selected' : '' %>>Display</option>
+                                        <option value="Battery" <%= stock.item === 'Battery' ? 'selected' : '' %>>Battery</option>
+                                        <option value="Charger" <%= stock.item === 'Charger' ? 'selected' : '' %>>Charger</option>
+                                        <option value="Tempered Glass" <%= stock.item === 'Tempered Glass' ? 'selected' : '' %>>Tempered Glass</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand">Brand</label>
+                                    <select class="form-control" id="brand" name="brand" required>
+                                        <option value="Apple" <%= stock.brand === 'Apple' ? 'selected' : '' %>>Apple</option>
+                                        <option value="Samsung" <%= stock.brand === 'Samsung' ? 'selected' : '' %>>Samsung</option>
+                                        <option value="Oppo" <%= stock.brand === 'Oppo' ? 'selected' : '' %>>Oppo</option>
+                                        <option value="Xiaomi" <%= stock.brand === 'Xiaomi' ? 'selected' : '' %>>Xiaomi</option>
+                                        <option value="Other" <%= stock.brand === 'Other' ? 'selected' : '' %>>Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="model">Model</label>
+                                    <input type="text" class="form-control" id="model" name="model" value="<%= stock.model %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity">Quantity</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" value="<%= stock.quantity %>" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Stock</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <%- include('_footer') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

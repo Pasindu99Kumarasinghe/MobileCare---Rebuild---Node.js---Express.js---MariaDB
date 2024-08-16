@@ -10,6 +10,7 @@ const promisePool = require('./node/db');
 const bcrypt = require('bcrypt');
 const db = require('./node/db');
 const router = express.Router();
+const multer = require('multer');
 const app = express();
 const port = 3000;
 
@@ -69,7 +70,139 @@ app.use((req, res, next) => {
 });
 
 module.exports = router;
-  
+
+// Route for products page (accessible to guests)
+app.get('/products', async (req, res) => {
+    try {
+        // Fetching products from the new products table
+        const [products] = await promisePool.query('SELECT * FROM products');
+        
+        // Render the products.ejs view with the products data
+        res.render('products', { products });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Route to render the view product
+app.get('/admin/view_product', ensureAuthenticated, ensureAdmin, async (req, res) => {
+    try {
+        const [products] = await promisePool.query('SELECT * FROM products');
+        res.render('admin/view_product', { products });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        req.flash('error', 'There was an error fetching the products.');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Route to render the add product form
+app.get('/admin/add_product', ensureAuthenticated, ensureAdmin, async (req, res) => {
+    try {
+        const [products] = await promisePool.query('SELECT * FROM products');
+        res.render('admin/add_product', { products });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        req.flash('error', 'There was an error fetching the products.');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Set up Multer for file storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, 'public/uploads')); // Directory to store images
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Add Product Route
+app.post('/admin/add_product', ensureAuthenticated, ensureAdmin, upload.single('image'), async (req, res) => {
+    const { item, brand, model, description, price, quantity } = req.body;
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    try {
+        await promisePool.query('INSERT INTO products (item, brand, model, description, price, image_url, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+        [item, brand, model, description, price, image_url, quantity]);
+
+        req.flash('success', 'Product added successfully!');
+        res.redirect('/admin/view_product');
+    } catch (error) {
+        console.error('Error adding product:', error);
+        req.flash('error', 'There was an error adding the product. Please try again later.');
+        res.redirect('/admin/view_product');
+    }
+});
+
+// Edit Product Route
+app.get('/admin/edit_product/:id', ensureAuthenticated, ensureAdmin, async (req, res) => {
+    const productId = req.params.id;
+    try {
+        const [results] = await promisePool.query('SELECT * FROM products WHERE id = ?', [productId]);
+        res.render('admin/edit_product', { product: results[0] });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        req.flash('error', 'There was an error fetching the product.');
+        res.redirect('/admin/view_product');
+    }
+});
+
+// Update Product Route
+app.post('/admin/update_product/:id', ensureAuthenticated, ensureAdmin, upload.single('image'), async (req, res) => {
+    const productId = req.params.id;
+    const { item, brand, model, description, price, quantity } = req.body;
+
+    try {
+        let query;
+        let params;
+
+        if (req.file) {
+            const image_url = '/uploads/' + req.file.filename;
+            query = `
+                UPDATE products 
+                SET item = ?, brand = ?, model = ?, description = ?, price = ?, quantity = ?, image_url = ?
+                WHERE id = ?
+            `;
+            params = [item, brand, model, description, price, quantity, image_url, productId];
+        } else {
+            query = `
+                UPDATE products 
+                SET item = ?, brand = ?, model = ?, description = ?, price = ?, quantity = ?
+                WHERE id = ?
+            `;
+            params = [item, brand, model, description, price, quantity, productId];
+        }
+
+        await promisePool.query(query, params);
+
+        req.flash('warning', 'Product updated successfully');
+        res.redirect('/admin/view_product');
+    } catch (error) {
+        console.error(`Error updating product with ID ${productId}:`, error);
+        req.flash('error', 'There was an error updating the product.');
+        res.redirect('/admin/view_product');
+    }
+});
+
+// Delete Product Route
+app.post('/admin/delete_product/:id', ensureAuthenticated, ensureAdmin, async (req, res) => {
+    const productId = req.params.id;
+    try {
+        await promisePool.query('DELETE FROM products WHERE id = ?', [productId]);
+        req.flash('danger', 'Product deleted successfully');
+        res.redirect('/admin/view_product');
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        req.flash('error', 'There was an error deleting the product.');
+        res.redirect('/admin/view_product');
+    }
+});
+
 // Route for home page
 app.get('/', (req, res) => {
     res.render('index', {
@@ -160,12 +293,12 @@ app.post('/register', async (req, res) => {
 
 // To store emails
 app.post('/send-message', async (req, res) => {
-    const { name, email, message } = req.body;
+    const { name, email, subject, message } = req.body;
 
     // Insert email details into the database
     try {
         await promisePool.query('INSERT INTO emails (name, email, subject, message) VALUES (?, ?, ?, ?)', 
-        [name, email, `New message from ${name}`, message]);
+        [name, email, subject, message]);
 
         req.flash('success', 'Your message has been sent successfully!');
         res.redirect('/contact');
@@ -178,10 +311,10 @@ app.post('/send-message', async (req, res) => {
 
 // To retrieve emails
 // Route to show messages
-app.get('/admin/messages', async (req, res) => {
+app.get('/admin/messages',ensureAuthenticated, ensureAdmin, async (req, res) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM emails ORDER BY created_at DESC');
-        res.render('admin/messages', { messages: rows });
+        res.render('admin/messages', { messages: rows, user: req.session.user });
     } catch (error) {
         console.error('Error fetching messages:', error);
         res.status(500).send('Internal Server Error');
@@ -197,10 +330,10 @@ app.get('/', (req, res) => {
 });
 
 // Route for stock page
-app.get('/stock', ensureAuthenticated, ensureAdmin, async (req, res) => {
+app.get('/admin/stock', ensureAuthenticated, ensureAdmin, async (req, res) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM stock');
-        res.render('stock', { stock: rows, user: req.session.user });
+        res.render('admin/stock', { stock: rows, user: req.session.user });
     } catch (error) {
         console.error('Error fetching stock data:', error);
         res.status(500).send('Internal Server Error');
@@ -209,19 +342,20 @@ app.get('/stock', ensureAuthenticated, ensureAdmin, async (req, res) => {
 
 
 // Route for add_stock page
-app.get('/add_stock', (req, res) => {
-    res.render('add_stock');
+app.get('/admin/add_stock',ensureAuthenticated, ensureAdmin, (req, res) => {
+    res.render('admin/add_stock');
 });
 
 // Handle Add Stock Form Submission
-app.post('/add_stock', async (req, res) => {
+app.post('/admin/add_stock',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { item, brand, model, quantity } = req.body;
 
     try {
         await promisePool.query('INSERT INTO stock (item, brand, model, quantity) VALUES (?, ?, ?, ?)', 
         [item, brand, model, quantity]);
 
-        res.redirect('/stock'); // Redirect to the stock list page
+        req.flash('success', 'Stock added successfully!');
+        res.redirect('/admin/stock'); // Redirect to the stock list page
     } catch (error) {
         console.error('Error adding stock:', error);
         res.status(500).send('Internal Server Error');
@@ -229,11 +363,11 @@ app.post('/add_stock', async (req, res) => {
 });
 
 // Route for edit_stock page
-app.get('/edit_stock/:id', async (req, res) => {
+app.get('/admin/edit_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const [rows] = await promisePool.query('SELECT * FROM stock WHERE id = ?', [id]);
-        res.render('edit_stock', { stock: rows[0] });
+        res.render('admin/edit_stock', { stock: rows[0], user: req.session.user });
     } catch (error) {
         console.error('Error fetching stock:', error);
         res.status(500).send('Internal Server Error');
@@ -241,15 +375,16 @@ app.get('/edit_stock/:id', async (req, res) => {
 });
 
 // Handle Edit Stock Form Submission
-app.post('/edit_stock/:id', async (req, res) => {
+app.post('/admin/edit_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
     const { item, brand, model, quantity } = req.body;
 
     try {
         await promisePool.query('UPDATE stock SET item = ?, brand = ?, model = ?, quantity = ? WHERE id = ?', 
         [item, brand, model, quantity, id]);
-
-        res.redirect('/stock'); // Redirect to the stock list page
+        
+        req.flash('warning', 'Stock updated successfully');
+        res.redirect('/admin/stock'); // Redirect to the stock list page
     } catch (error) {
         console.error('Error updating stock:', error);
         res.status(500).send('Internal Server Error');
@@ -257,11 +392,11 @@ app.post('/edit_stock/:id', async (req, res) => {
 });
 
 // Route for delete_stock page (confirmation)
-app.get('/delete_stock/:id', async (req, res) => {
+app.get('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const [rows] = await promisePool.query('SELECT * FROM stock WHERE id = ?', [id]);
-        res.render('delete_stock', { stock: rows[0] });
+        res.render('admin/delete_stock', { stock: rows[0], user: req.session.user });
     } catch (error) {
         console.error('Error fetching stock for deletion:', error);
         res.status(500).send('Internal Server Error');
@@ -269,12 +404,14 @@ app.get('/delete_stock/:id', async (req, res) => {
 });
 
 // Handle Delete Stock Request
-app.post('/delete_stock/:id', async (req, res) => {
+app.post('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
 
     try {
         await promisePool.query('DELETE FROM stock WHERE id = ?', [id]);
-        res.redirect('stock'); // Redirect to the stock list page
+
+        req.flash('danger', 'Stock deleted successfully');
+        res.redirect('/admin/stock'); // Redirect to the stock list page
     } catch (error) {
         console.error('Error deleting stock:', error);
         res.status(500).send('Internal Server Error');
@@ -282,14 +419,15 @@ app.post('/delete_stock/:id', async (req, res) => {
 });
 
 // Handle Add Customer Form Submission
-app.post('/add_customer', async (req, res) => {
+app.post('/admin/add_customer',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { customerName, idNumber, contactNumber, email, address, purchasedItems, billValue } = req.body;
 
     try {
         await promisePool.query('INSERT INTO customers (customerName, idNumber, contactNumber, email, address, purchasedItems, billValue) VALUES (?, ?, ?, ?, ?, ?, ?)', 
         [customerName, idNumber, contactNumber, email, address, purchasedItems, billValue]);
 
-        res.redirect('customer'); // Redirect to the customer list page
+        req.flash('success', 'Customer added successfully!');
+        res.redirect('/admin/customer'); // Redirect to the customer list page
     } catch (error) {
         console.error('Error adding customer:', error);
         res.status(500).send('Internal Server Error');
@@ -297,10 +435,10 @@ app.post('/add_customer', async (req, res) => {
 });
 
 // Route for customer page
-app.get('/customer', async (req, res) => {
+app.get('/admin/customer',ensureAuthenticated, ensureAdmin, async (req, res) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM customers');
-        res.render('customer', { customers: rows });
+        res.render('admin/customer', { customers: rows, user: req.session.user });
     } catch (error) {
         console.error('Error fetching customers:', error);
         res.status(500).send('Internal Server Error');
@@ -308,8 +446,8 @@ app.get('/customer', async (req, res) => {
 });
 
 // Route for add_customer page
-app.get('/add_customer', (req, res) => {
-    res.render('add_customer');
+app.get('/admin/add_customer',ensureAuthenticated, ensureAdmin, (req, res) => {
+    res.render('admin/add_customer');
 });
 
 // Route for contact page
@@ -318,11 +456,11 @@ app.get('/contact', (req, res) => {
 });
 
 // Route for edit customer page
-app.get('/edit_customer/:id', async (req, res) => {
+app.get('/admin/edit_customer/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const [rows] = await promisePool.query('SELECT * FROM customers WHERE id = ?', [id]);
-        res.render('edit_customer', { customer: rows[0] });
+        res.render('admin/edit_customer', { customer: rows[0], user: req.session.user });
     } catch (error) {
         console.error('Error fetching customer:', error);
         res.status(500).send('Internal Server Error');
@@ -330,7 +468,7 @@ app.get('/edit_customer/:id', async (req, res) => {
 });
 
 // Handle Edit Customer Form Submission
-app.post('/edit_customer/:id', async (req, res) => {
+app.post('/admin/edit_customer/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
     const { customerName, idNumber, contactNumber, email, address, purchasedItems, billValue } = req.body;
 
@@ -338,7 +476,8 @@ app.post('/edit_customer/:id', async (req, res) => {
         await promisePool.query('UPDATE customers SET customerName = ?, idNumber = ?, contactNumber = ?, email = ?, address = ?, purchasedItems = ?, billValue = ? WHERE id = ?', 
         [customerName, idNumber, contactNumber, email, address, purchasedItems, billValue, id]);
 
-        res.redirect('/customer'); // Redirect to the customer list page
+        req.flash('warning', 'Customer updated successfully');
+        res.redirect('/admin/customer'); // Redirect to the customer list page
     } catch (error) {
         console.error('Error updating customer:', error);
         res.status(500).send('Internal Server Error');
@@ -346,12 +485,14 @@ app.post('/edit_customer/:id', async (req, res) => {
 });
 
 // Handle Delete Customer Request
-app.post('/delete_customer/:id', async (req, res) => {
+app.post('/admin/delete_customer/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
 
     try {
         await promisePool.query('DELETE FROM customers WHERE id = ?', [id]);
-        res.redirect('customer'); // Redirect to the customer list page
+        
+        req.flash('danger', 'Customer deleted successfully');
+        res.redirect('/admin/customer'); // Redirect to the customer list page
     } catch (error) {
         console.error('Error deleting customer:', error);
         res.status(500).send('Internal Server Error');
