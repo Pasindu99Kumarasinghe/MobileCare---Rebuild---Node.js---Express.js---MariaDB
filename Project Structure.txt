@@ -1,0 +1,56 @@
+Root Directory
+│
+├── .vscode
+├── email
+│   ├── recieveEmail.js
+│   └── sendEmail.js
+├── node
+│   ├── db.js
+│   └── routes.js
+├── node_modules
+├── public
+│   ├── css
+│   │   ├── bootstrap.css
+│   │   ├── bootstrap.min.css
+│   │   └── styles.css
+│   ├── fonts
+│   ├── img
+│   │   ├── about
+│   │   ├── brand
+│   │   ├── home
+│   │   └── services
+│   ├── js
+│   │   └── bootstrap.min.js
+│   └── uploads
+├── views
+│   ├── admin
+│   │   ├── _footer.ejs
+│   │   ├── _navbar.ejs
+│   │   ├── add_customer.ejs
+│   │   ├── add_product.ejs
+│   │   ├── add_stock.ejs
+│   │   ├── admin-dashboard.ejs
+│   │   ├── customer.ejs
+│   │   ├── delete_customer.ejs
+│   │   ├── delete_stock.ejs
+│   │   ├── edit_customer.ejs
+│   │   ├── edit_products.ejs
+│   │   ├── edit_stock.ejs
+│   │   ├── messages.ejs
+│   │   ├── stock.ejs
+│   │   └── view_product.ejs
+│   ├── _footer.ejs
+│   ├── _navbar.ejs
+│   ├── about.ejs
+│   ├── contact.ejs
+│   ├── index.ejs
+│   ├── login.ejs
+│   ├── products.ejs
+│   ├── register.ejs
+│   └── services.ejs
+├── .env
+├── package-lock.json
+├── package.json
+├── README.md
+├── README.mdgit
+└── server.js

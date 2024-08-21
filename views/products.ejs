@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet"> <!-- Custom CSS if needed -->
 </head>
 
 <body style="padding: 5px;">
@@ -17,66 +18,43 @@
     <!-- Products Section -->
     <section class="products-section py-5">
         <div class="container">
-            <h6>Explore our range of products below!</h6>
+            <h6 class="text-center mb-4">Explore our range of products below!</h6>
 
-            <div class="row mt-3">
+            <!-- Search Bar -->
+            <div class="row mb-4">
                 <div class="col-md-12 text-center">
                     <input type="text" id="searchBar" class="form-control" placeholder="Search by Item, Brand, or Model">
                 </div>
             </div>
-            
-            <div class="row mt-5">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header text-center">
-                            <h3>Products List</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-success">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Item</th>
-                                            <th scope="col">Brand</th>
-                                            <th scope="col">Model</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Image</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="productTableBody" class="table-light">
-                                        <% if (products.length > 0) { %>
-                                            <% products.forEach(product => { %>
-                                                <tr class="product-row">
-                                                    <td class="item"><%= product.item %></td>
-                                                    <td class="brand"><%= product.brand %></td>
-                                                    <td class="model"><%= product.model %></td>
-                                                    <td><%= product.description %></td>
-                                                    <td>Rs.<%= product.price %></td>
-                                                    <td><%= product.quantity %></td>
-                                                    <td>
-                                                        <% if (product.image_url) { %>
-                                                            <img src="<%= product.image_url %>" alt="<%= product.item %>" style="width: 100px; height: auto;">
-                                                        <% } else { %>
-                                                            No image
-                                                        <% } %>
-                                                    </td>
-                                                </tr>
-                                            <% }); %>
-                                        <% } else { %>
-                                            <tr>
-                                                <td colspan="8" class="text-center">No products available</td>
-                                            </tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
+
+            <!-- Product Cards -->
+            <div class="row">
+                <% if (products.length > 0) { %>
+                    <% products.forEach(product => { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <% if (product.image_url) { %>
+                                    <img src="<%= product.image_url %>" alt="<%= product.item %>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <% } else { %>
+                                    <img src="/img/no-image.png" alt="No Image" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <% } %>
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= product.item %></h5>
+                                    <p class="card-text"><strong>Brand:</strong> <%= product.brand %></p>
+                                    <p class="card-text"><strong>Model:</strong> <%= product.model %></p>
+                                    <p class="card-text"><strong>Description:</strong> <%= product.description %></p>
+                                    <p class="card-text"><strong>Price:</strong> Rs.<%= product.price %></p>
+                                    <p class="card-text"><strong>Quantity:</strong> <%= product.quantity %></p>
+                                </div>
                             </div>
                         </div>
-                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-md-12">
+                        <p class="text-center">No products available</p>
                     </div>
-                </div>
-            </div>         
+                <% } %>
+            </div>
         </div>
     </section>
 
@@ -90,17 +68,17 @@
     <script>
         document.getElementById('searchBar').addEventListener('input', function() {
             const searchValue = this.value.trim().toLowerCase();
-            const rows = document.querySelectorAll('.product-row');
+            const cards = document.querySelectorAll('.card');
 
-            rows.forEach(row => {
-                const item = row.querySelector('.item').textContent.trim().toLowerCase();
-                const brand = row.querySelector('.brand').textContent.trim().toLowerCase();
-                const model = row.querySelector('.model').textContent.trim().toLowerCase();
+            cards.forEach(card => {
+                const item = card.querySelector('.card-title').textContent.trim().toLowerCase();
+                const brand = card.querySelector('.card-text').textContent.trim().toLowerCase();
+                const model = card.querySelector('.card-text').textContent.trim().toLowerCase();
 
                 if (item.includes(searchValue) || brand.includes(searchValue) || model.includes(searchValue)) {
-                    row.style.display = '';
+                    card.style.display = '';
                 } else {
-                    row.style.display = 'none';
+                    card.style.display = 'none';
                 }
             });
         });

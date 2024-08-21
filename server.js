@@ -333,7 +333,7 @@ app.get('/', (req, res) => {
 app.get('/admin/stock', ensureAuthenticated, ensureAdmin, async (req, res) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM stock');
-        res.render('admin/stock', { stock: rows, user: req.session.user });
+        res.render('admin/stock', { stock: stocks, messages: req.flash(), user: req.session.user });
     } catch (error) {
         console.error('Error fetching stock data:', error);
         res.status(500).send('Internal Server Error');
@@ -391,6 +391,20 @@ app.post('/admin/edit_stock/:id',ensureAuthenticated, ensureAdmin, async (req, r
     }
 });
 
+function deleteStockById(stockId, callback) {
+    // Replace `YourDatabaseModel` with your actual database model name
+    YourDatabaseModel.deleteOne({ id: stockId }, function (err) {
+        if (err) {
+            console.error('Error deleting stock item:', err);
+            callback(err);
+        } else {
+            console.log('Stock item deleted successfully');
+            callback(null);
+        }
+    });
+}
+
+
 // Route for delete_stock page (confirmation)
 app.get('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
@@ -403,8 +417,8 @@ app.get('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req, 
     }
 });
 
-// Handle Delete Stock Request
-app.post('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
+// Handle Delete Stock Form Submission
+app.post('/admin/delete_stock/:id', ensureAuthenticated, ensureAdmin, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -417,6 +431,7 @@ app.post('/admin/delete_stock/:id',ensureAuthenticated, ensureAdmin, async (req,
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Handle Add Customer Form Submission
 app.post('/admin/add_customer',ensureAuthenticated, ensureAdmin, async (req, res) => {
@@ -513,6 +528,7 @@ app.get('/services', (req, res) => {
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
     res.render('dashboard');
 });
+
 
 // Route that requires admin role
 app.get('/admin', ensureAuthenticated, ensureAdmin, (req, res) => {

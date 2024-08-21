@@ -34,11 +34,35 @@
                             <form action="/admin/add_product" method="POST" enctype="multipart/form-data">
                                 <div class="form-group mb-3">
                                     <label for="item">Item</label>
-                                    <input type="text" class="form-control" id="item" name="item" required>
+                                    <select class="form-control" id="item" name="item" required>
+                                        <option value="Display">Mobile Phone</option>
+                                        <option value="Display">Display</option>
+                                        <option value="Battery">Battery</option>
+                                        <option value="Charger">Charger</option>
+                                        <option value="Tempered Glass">Charger Dock</option>
+                                        <option value="Charger">Cable</option>
+                                        <option value="Tempered Glass">Tempered Glass</option>
+                                        <option value="Tempered Glass">Ear Phone</option>
+                                        <option value="Charger">Ear Bud</option>
+                                        <option value="Tempered Glass">Back Cover</option>
+                                        <option value="Tempered Glass">Power Bank</option>
+
+                                    </select>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="brand">Brand</label>
-                                    <input type="text" class="form-control" id="brand" name="brand" required>
+                                    <select class="form-control" id="brand" name="brand" required>
+                                        <option value="Apple">Apple</option>
+                                        <option value="Xiaomi">Oneplus</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Oppo">Oppo</option>
+                                        <option value="Xiaomi">Xiaomi</option>
+                                        <option value="Xiaomi">Vivo</option>
+                                        <option value="Xiaomi">Huawei</option>
+                                        <option value="Xiaomi">Realme</option>
+                                        <option value="Xiaomi">Pixel</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="model">Model</label>
