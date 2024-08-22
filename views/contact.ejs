@@ -47,6 +47,39 @@
                             </div>
                             <button type="submit" class="btn btn-success">Send Message</button>
                         </form>
+
+                        <!-- Display Previous Messages and Replies -->
+                        <hr class="my-5">
+                        <h3>Your Previous Messages</h3>
+                        <% if (messagesList && messagesList.length > 0) { %>
+                            <ul class="list-group">
+                                <% messagesList.forEach(message => { %>
+                                    <li class="list-group-item mb-4">
+                                        <strong>Subject:</strong> <%= message.subject %><br>
+                                        <strong>Message:</strong> <%= message.message %><br>
+                                        <small>Sent on <%= new Date(message.created_at).toLocaleString() %></small>
+                                        
+                                        <% const messageReplies = replies.filter(reply => reply.email_id === message.id); %>
+                                        <% if (messageReplies.length > 0) { %>
+                                            <div class="mt-3">
+                                                <h5>Replies:</h5>
+                                                <ul class="list-group">
+                                                    <% messageReplies.forEach(reply => { %>
+                                                        <li class="list-group-item">
+                                                            <%= reply.reply_message %>
+                                                            <br>
+                                                            <small>Replied on <%= new Date(reply.created_at).toLocaleString() %></small>
+                                                        </li>
+                                                    <% }) %>
+                                                </ul>
+                                            </div>
+                                        <% } %>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p>No previous messages found.</p>
+                        <% } %>
                     </div>
                 </div>
             </div>

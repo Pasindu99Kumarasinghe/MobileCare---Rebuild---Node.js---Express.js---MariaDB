@@ -38,6 +38,12 @@
                                         <strong>Subject:</strong> <%= message.subject %><br>
                                         <strong>Message:</strong> <%= message.message %><br>
                                         <small><%= new Date(message.created_at).toLocaleString() %></small>
+                                        <div class="mt-2">
+                                            <a href="/admin/reply-message/<%= message.id %>" class="btn btn-primary btn-sm">Reply</a>
+                                            <form action="/admin/delete-message/<%= message.id %>" method="POST" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>                                            
+                                        </div>
                                     </li>
                                 <% }) %>
                             </ul>

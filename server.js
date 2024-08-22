@@ -321,6 +321,64 @@ app.get('/admin/messages',ensureAuthenticated, ensureAdmin, async (req, res) => 
     }
 });
 
+// Render the reply form
+app.get('/admin/reply-message/:id', ensureAuthenticated, ensureAdmin, async (req, res) => {
+    const messageId = req.params.id;
+
+    try {
+        const [rows] = await promisePool.query('SELECT * FROM emails WHERE id = ?', [messageId]);
+        res.render('admin/reply_message', { message: rows[0], user: req.session.user });
+    } catch (error) {
+        console.error('Error fetching message:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Handle sending the reply
+app.post('/admin/reply-message/:id', async (req, res) => {
+    const { replyMessage } = req.body;
+    const messageId = req.params.id;
+
+    try {
+        // Fetch the original message by ID
+        const [originalMessage] = await promisePool.query('SELECT * FROM emails WHERE id = ?', [messageId]);
+
+        // Store the reply in the database
+        await promisePool.query('INSERT INTO email_replies (email_id, reply_message) VALUES (?, ?)', [messageId, replyMessage]);
+
+        // Send the reply via email (implement your sendEmail logic here)
+        sendEmail({
+            to: originalMessage[0].email,
+            subject: `Re: ${originalMessage[0].subject}`,
+            text: replyMessage,
+        });
+
+        req.flash('success', 'Reply sent successfully');
+        res.redirect('/admin/messages');
+    } catch (error) {
+        console.error('Error sending reply:', error);
+        req.flash('error', 'There was an error sending your reply. Please try again later.');
+        res.redirect('/admin/messages');
+    }
+});
+
+
+// Handle deleting messages
+app.post('/admin/delete-message/:id', async (req, res) => {
+    const messageId = req.params.id;
+
+    try {
+        await promisePool.query('DELETE FROM emails WHERE id = ?', [messageId]);
+
+        req.flash('success', 'Message deleted successfully');
+        res.redirect('/admin/messages');
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        req.flash('error', 'There was an error deleting the message. Please try again.');
+        res.redirect('/admin/messages');
+    }
+});
+
 // Homepage route
 app.get('/', (req, res) => {
     res.render('index', {
@@ -466,9 +524,35 @@ app.get('/admin/add_customer',ensureAuthenticated, ensureAdmin, (req, res) => {
 });
 
 // Route for contact page
-app.get('/contact', (req, res) => {
-    res.render('contact');
+app.get('/contact', ensureAuthenticated, async (req, res) => {
+    try {
+        const userEmail = req.session.user.email;
+
+        // Fetch the original messages sent by the user
+        const [userMessages] = await promisePool.query('SELECT * FROM emails WHERE email = ? ORDER BY created_at DESC', [userEmail]);
+
+        // Fetch replies associated with the user's messages
+        const [replies] = await promisePool.query(`
+            SELECT r.*, e.subject FROM email_replies r
+            JOIN emails e ON r.id = e.id
+            WHERE e.email = ?
+            ORDER BY r.created_at ASC
+        `, [userEmail]);
+
+        // Pass the messages and replies to the contact view
+        res.render('contact', {
+            messagesList: userMessages,
+            replies: replies,
+            messages: req.flash(),
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error fetching user messages or replies:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
+
+
 
 // Route for edit customer page
 app.get('/admin/edit_customer/:id',ensureAuthenticated, ensureAdmin, async (req, res) => {
