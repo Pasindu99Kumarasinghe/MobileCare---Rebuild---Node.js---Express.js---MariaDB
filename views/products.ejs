@@ -8,6 +8,35 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet"> <!-- Custom CSS if needed -->
+
+    <!-- Custom CSS for Hover Effect -->
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .card-img-top {
+            transition: opacity 0.2s;
+        }
+        .card:hover .card-img-top {
+            opacity: 0.8;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .card:hover .card-title {
+            color: #2aa198;
+        }
+    </style>
 </head>
 
 <body style="padding: 5px;">
@@ -65,6 +94,7 @@
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 
+    <!-- Search Functionality -->
     <script>
         document.getElementById('searchBar').addEventListener('input', function() {
             const searchValue = this.value.trim().toLowerCase();

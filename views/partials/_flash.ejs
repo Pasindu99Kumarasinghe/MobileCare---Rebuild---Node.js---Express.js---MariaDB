@@ -1,0 +1,10 @@
+<!-- views/_flash.ejs -->
+<% if (messages) { %>
+    <% Object.keys(messages).forEach(function(key) { %>
+        <% messages[key].forEach(function(message) { %>
+            <div class="alert alert-<%= key %>">
+                <%= message %>
+            </div>
+        <% }); %>
+    <% }); %>
+<% } %>

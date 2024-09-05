@@ -11,6 +11,20 @@
     <!-- Navigation Sidebar -->
     <%- include('_navbar') %>
 
+    <!-- Display Flash Messages Below Navbar -->
+<% if (messages.success && messages.success.length > 0) { %>
+    <div class="alert alert-success" role="alert">
+        <%= messages.success %>
+    </div>
+<% } %>
+<% if (messages.error && messages.error.length > 0) { %>
+    <div class="alert alert-danger" role="alert">
+        <%= messages.error %>
+    </div>
+<% } %>
+
+
+
     <!-- Messages Section -->
     <div id="messages">
         <section class="messages-section py-5">

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +7,15 @@
     <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS for Image Sizing -->
+    <style>
+        .service-box img {
+            width: 100%; /* Ensures the image takes full width of its container */
+            height: 250px; /* Set a consistent height */
+            object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+        }
+    </style>
 </head>
 
 <body style="padding: 5px;">
@@ -55,7 +65,7 @@
                     <div class="service-box">
                         <img src="/img/services/unlock.jpg" alt="Mobile Unlocking" class="img-fluid mb-3">
                         <h4>Mobile Unlocking</h4>
-                        <p>Unlocking Android Mobiles and IPhones .</p>
+                        <p>Unlocking Android Mobiles and iPhones.</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-center">
@@ -69,7 +79,7 @@
         </div>
     </section>
 
-    <!--Footer Section -->
+    <!-- Footer Section -->
     <%- include('_footer') %>
 
     <!-- Bootstrap JS and dependencies -->
@@ -79,3 +89,4 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+</html>

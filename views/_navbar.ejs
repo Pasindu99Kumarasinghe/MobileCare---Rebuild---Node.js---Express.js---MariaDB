@@ -3,12 +3,12 @@
         <img src="/img/brand/logo1.png" alt="Logo" width="75" height="75" class="d-inline-block align-center rounded-image">
         <span class="brand-name" style="font-family: 'Roboto', sans-serif; font-size: 30px;">Mobile Care</span>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto"> <!-- Centered navbar items -->
-            <% if (!user) { %> <!-- Not logged in -->
+        <ul class="navbar-nav mx-auto">
+            <% if (!user) { %>
                 <li class="nav-item px-3">
                     <a class="nav-link" href="/">Home</a>
                 </li>
@@ -21,7 +21,7 @@
                 <li class="nav-item px-3">
                     <a class="nav-link" href="/services">Services</a>
                 </li>
-            <% } else if (user.role === 'admin') { %> <!-- Admin -->
+            <% } else if (user.role === 'admin') { %>
                 <li class="nav-item px-3">
                     <a class="nav-link" href="/admin/admin-dashboard">Dashboard</a>
                 </li>
@@ -37,7 +37,7 @@
                 <li class="nav-item px-3">
                     <a class="nav-link" href="/admin/messages">Messages</a>
                 </li>
-            <% } else { %> <!-- User -->
+            <% } else { %>
                 <li class="nav-item px-3">
                     <a class="nav-link" href="/">Home</a>
                 </li>
@@ -55,14 +55,14 @@
                 </li>
             <% } %>
         </ul>
-        <ul class="navbar-nav ms-auto me-3"> <!-- Right-aligned buttons with space -->
+        <ul class="navbar-nav ms-auto me-3">
             <% if (!user) { %>
                 <li class="nav-item">
-                    <button class="btn btn-outline-success my-2 my-sm-0 px-3 py-2" type="button" onclick="location.href='/login'">Login</button>
+                    <button class="btn btn-outline-light my-2 my-sm-0 px-3 py-2" type="button" onclick="location.href='/login'">Login</button>
                 </li>
             <% } else { %>
                 <li class="nav-item">
-                    <button class="btn btn-outline-warning my-2 my-sm-0 px-3 py-2" type="button" onclick="location.href='/logout'">Log Out</button>
+                    <button class="btn btn-outline-light my-2 my-sm-0 px-3 py-2" type="button" onclick="location.href='/logout'">Log Out</button>
                 </li>
             <% } %>
         </ul>
