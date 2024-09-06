@@ -11,6 +11,20 @@
         html {
             scroll-behavior: smooth;
         }
+
+        .location-element {
+    width: 100%;
+    height: 450px;
+    object-fit: cover; /* Ensures the image covers the entire area without stretching */
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .location-element {
+        height: auto; /* Adjusts for smaller screens */
+    }
+}
+
     </style>
 </head>
 <body style="padding: 5px;">
@@ -68,22 +82,31 @@
         <div class="container">
             <h2 class="text-center">Our Location</h2>
             <div class="row">
+                <!-- Location Image -->
                 <div class="col-md-6 text-center">
                     <div class="location">
-                        <img src="/img/home/location.jpg" alt="location" class="img-fluid mb-3">
+                        <img src="/img/home/location.jpg" alt="location" class="img-fluid location-element">
                     </div>
                 </div>
+                <!-- Google Map -->
                 <div class="col-md-6 text-center">
                     <div class="google-map">
-                        <!-- Embed Google Map -->
                         <iframe
-                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.838312182915!2d80.03770167473265!3d6.5420921229475235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2336d3243fc37%3A0x7a6fd9394ffd4429!2sMobile%20Care%20Dodangoda!5e0!3m2!1sen!2slk!4v1723788433228!5m2!1sen!2slk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                            class="location-element"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.838312182915!2d80.03770167473265!3d6.5420921229475235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2336d3243fc37%3A0x7a6fd9394ffd4429!2sMobile%20Care%20Dodangoda!5e0!3m2!1sen!2slk!4v1723788433228!5m2!1sen!2slk" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    
     <!-- Google Maps Section End -->
 
     <!--Footer Section -->

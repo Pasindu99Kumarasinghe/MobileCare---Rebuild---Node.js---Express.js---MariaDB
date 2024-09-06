@@ -10,6 +10,7 @@ const promisePool = require('./node/db');
 const bcrypt = require('bcrypt');
 const app = express();
 const multer = require('multer');
+const nodemailer = require('nodemailer');
 const port = 3000;
 
 // Set up EJS as the view engine
@@ -64,11 +65,28 @@ function ensureAdmin(req, res, next) {
 }
 
 // Placeholder function for sendEmail
-function sendEmail({ to, subject, text }) {
-    console.log(`Email sent to ${to} with subject "${subject}" and message: "${text}"`);
-    // You can integrate with an actual email service here (e.g., Nodemailer)
-}
+const sendEmail = async ({ to, subject, text }) => {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail', // or any other email service
+        auth: {
+            user: 'your-email@gmail.com', // replace with your email
+            pass: 'your-email-password', // replace with your email password or use environment variables
+        },
+    });
 
+    try {
+        await transporter.sendMail({
+            from: 'your-email@gmail.com', // sender address
+            to: to, // list of receivers
+            subject: subject, // Subject line
+            text: text, // plain text body
+        });
+        console.log(`Email sent to ${to} with subject "${subject}" and message: "${text}"`);
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error;
+    }
+};
 
 ///////////////////// Routes ////////////////////////
 
@@ -535,31 +553,29 @@ app.post('/admin/delete_product/:id', ensureAuthenticated, ensureAdmin, async (r
 // Route for contact page
 app.get('/contact', ensureAuthenticated, async (req, res) => {
     try {
-        const userEmail = req.session.user.email;
+        const userId = req.session.user.id;
 
-        // Fetch the original messages sent by the user
-        const [userMessages] = await promisePool.query('SELECT * FROM emails WHERE email = ? ORDER BY created_at DESC', [userEmail]);
+        // Fetch messages sent by the user from the database
+        const [messagesList] = await promisePool.query('SELECT * FROM emails ORDER BY created_at DESC');
 
-        // Fetch replies associated with the user's messages
-        const [replies] = await promisePool.query(`
-            SELECT r.*, e.subject FROM email_replies r
-            JOIN emails e ON r.email_id = e.id
-            WHERE e.email = ?
-            ORDER BY r.created_at ASC
-        `, [userEmail]);
+        // Fetch replies to these messages
+        const [replies] = await promisePool.query(
+            'SELECT * FROM email_replies WHERE email_id IN (?)',
+            [messagesList.map(message => message.id)]
+        );
 
-        // Pass the messages and replies to the contact view
-        res.render('contact', {
-            messagesList: userMessages,
+        res.render('contact', { 
+            messagesList: messagesList, 
             replies: replies,
-            user: req.session.user
+            messages: req.flash() // For flash messages
         });
     } catch (error) {
-        console.error('Error fetching user messages or replies:', error);
-        req.flash('error', 'There was an error fetching your messages. Please try again later.');
-        res.redirect('/contact');
+        console.error('Error fetching messages and replies:', error);
+        req.flash('error', 'An error occurred while fetching your messages.');
+        res.redirect('/');
     }
 });
+
 
 // To store emails
 app.post('/send-message', async (req, res) => {
@@ -617,8 +633,8 @@ app.post('/admin/reply-message/:id', async (req, res) => {
         // Store the reply in the database
         await promisePool.query('INSERT INTO email_replies (email_id, reply_message) VALUES (?, ?)', [messageId, replyMessage]);
 
-        // Send the reply via email (implement your sendEmail logic here)
-        sendEmail({
+        // Send the reply via email
+        await sendEmail({
             to: originalMessage[0].email,
             subject: `Re: ${originalMessage[0].subject}`,
             text: replyMessage,
@@ -632,6 +648,7 @@ app.post('/admin/reply-message/:id', async (req, res) => {
         res.redirect('/admin/messages');
     }
 });
+
 
 
 // Handle deleting messages
